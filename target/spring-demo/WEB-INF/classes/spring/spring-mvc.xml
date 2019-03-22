@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.2.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd">
+
+	<mvc:annotation-driven />
+
+	<!-- 扫描web包，应用Spring的注解  -->
+	<context:component-scan base-package="com.zyh.spring" />
+	<bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping" />
+	
+	<!-- 配置SpringMVC的视图解析器 -->
+	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/WEB-INF/jsp/"/>
+		<property name="suffix" value=".jsp"/>
+	</bean>
+	
+	<!-- 拦截器开始 -->
+	<mvc:interceptors>
+	    <!-- 用户登录校验拦截器 -->
+	    <mvc:interceptor>
+	    <!-- 需要拦截的路径 -->
+	    <mvc:mapping path="sysAccess/*"/>
+	    <!--  不需要拦截的路径 -->
+	    <mvc:exclude-mapping path="sysAccess/sysSubmit.do"/>
+	    <bean class="com.zyh.spring.interceptor.UserLoginInterceptor" />
+	    </mvc:interceptor>
+	</mvc:interceptors>
+	<!-- 拦截器结束 -->
+	
+	<!--对象 JSON 转换器-->
+    <bean id="jsonHttpMessageConverter" class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+        <property name="supportedMediaTypes">
+            <list>
+                <value>application/json;charset=UTF-8</value>
+            </list>
+        </property>
+    </bean>
+	
+</beans>
